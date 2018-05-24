@@ -38,5 +38,24 @@ app.get('/users', function (req, res) {
 
 });
 
+app.post('/users', function (request, res) {
+    var userData = {
+        firstname: request.body.firstname,
+        lastname: request.body.lastname,
+        email: request.body.email,
+        age: request.body.age
+    };
+
+    MongoClient.connect(url, function (err, db) {
+        if (err) throw err;
+        var database = db.db("demo");
+        database.collection("users").insertOne(userData, function (err, result) {
+            if (err) throw err;
+            res.end('{"success" : "Updated Successfully", "status" : 200}');
+        });
+        db.close();
+    });
+})
+
 app.listen(PORT, () => console.log(`Listening on ${ PORT }`))
 
